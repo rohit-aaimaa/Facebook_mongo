@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import mysql from "mysql";
 import axios from "axios";
 
 export default class App extends React.Component {
@@ -9,9 +10,23 @@ export default class App extends React.Component {
   }
 
   componentDidMount(){
-    axios.get('https://graph.facebook.com/me?access_token=EAACEdEose0cBAH3an9zjO9s4I0lGrdwIj3rqKa2UakSDN1ZCy8XoPZCd58VamZBvZBVwwFZC0HJ0LomDqD2Ik13QbUepQcuuinfSA5ZAEXU1ZAy82KWaHxA0Dgu2ZBcFkIBJxoMCAiUsjyfRnNvzT1eZCe0dzzwwzAfHMHLNnZAqYVQZCqJn5zPlE3TJNySmxtutZBw9TdYSwVXhXyEraSOXXZCxjXZBP4ObquqxMZD&fields=id,name,friends{name}')
+    const connection = mysql.createConnection({
+      host : 'localhost',
+      user : 'root',
+      password : '',
+      database : 'fbsql'
+    })
+
+    connection.connect()
+
+    axios.get('https://graph.facebook.com/me?access_token=EAACEdEose0cBAHJfpPJD8pPKxRk4eQEYnUYx3UepHgY8Y9wwJf9rc5zfrPImah8IraXxjxaXQc4xgtZChZAn40rBXIeXTET4a7wpqyM7QSyU9aPJJOZCJKEgZATzyOgN9cJmxKc3bF3JNz55HgiGIwZAqQlPp8pWpFwmbgaGB9eFC4dTOcGPk3jTMhZAsIcnbOQmjmZBlR3Di8fClCZA914A&fields=id,name,friends{name}')
     .then(res => res.data)
-    .then(user => this.setState({info: user}))
+    .then(user => {
+      connection.query(`INSERT INTO user VALUES ({user.id}, {user.name})`, (err, result) => {
+        
+      })
+      this.setState({info: user})
+    })
   }
 
   render() {
